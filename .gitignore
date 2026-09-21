@@ -1,0 +1,22 @@
+# Visual Studio
+.vs/
+
+# Compilación de .NET
+bin/
+obj/
+
+# Archivos de usuario de Visual Studio
+*.user
+*.suo
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# Paquetes NuGet
+*.nupkg
+
+# Configuración local
+appsettings.json
