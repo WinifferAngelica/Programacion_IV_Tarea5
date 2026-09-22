@@ -30,22 +30,23 @@
         {
             dgvEstudiantes = new DataGridView();
             btnCargar = new Button();
-            textBox1 = new TextBox();
+            textBoxNombre = new TextBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
-            dateTimePicker1 = new DateTimePicker();
+            dateTimePickerNac = new DateTimePicker();
             label4 = new Label();
             label5 = new Label();
-            textBox2 = new TextBox();
-            textBox3 = new TextBox();
+            textBoxLugar = new TextBox();
+            textBoxCasa = new TextBox();
             label6 = new Label();
             label7 = new Label();
-            textBox4 = new TextBox();
-            textBox5 = new TextBox();
+            textBoxSangre = new TextBox();
+            textBoxVarita = new TextBox();
             label8 = new Label();
             label9 = new Label();
-            dateTimePicker2 = new DateTimePicker();
+            dateTimePickerIng = new DateTimePicker();
+            btnAgregar = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvEstudiantes).BeginInit();
             SuspendLayout();
             // 
@@ -68,12 +69,13 @@
             btnCargar.UseVisualStyleBackColor = true;
             btnCargar.Click += btnCargar_Click;
             // 
-            // textBox1
+            // textBoxNombre
             // 
-            textBox1.Location = new Point(174, 53);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(250, 27);
-            textBox1.TabIndex = 2;
+            textBoxNombre.Location = new Point(174, 53);
+            textBoxNombre.Name = "textBoxNombre";
+            textBoxNombre.Size = new Size(250, 27);
+            textBoxNombre.TabIndex = 2;
+            textBoxNombre.TextChanged += textBox1_TextChanged;
             // 
             // label1
             // 
@@ -104,12 +106,12 @@
             label3.TabIndex = 5;
             label3.Text = "Casa";
             // 
-            // dateTimePicker1
+            // dateTimePickerNac
             // 
-            dateTimePicker1.Location = new Point(174, 94);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(250, 27);
-            dateTimePicker1.TabIndex = 6;
+            dateTimePickerNac.Location = new Point(174, 94);
+            dateTimePickerNac.Name = "dateTimePickerNac";
+            dateTimePickerNac.Size = new Size(250, 27);
+            dateTimePickerNac.TabIndex = 6;
             // 
             // label4
             // 
@@ -129,19 +131,19 @@
             label5.TabIndex = 8;
             label5.Text = "Lugar de nacimiento";
             // 
-            // textBox2
+            // textBoxLugar
             // 
-            textBox2.Location = new Point(174, 127);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(250, 27);
-            textBox2.TabIndex = 9;
+            textBoxLugar.Location = new Point(174, 127);
+            textBoxLugar.Name = "textBoxLugar";
+            textBoxLugar.Size = new Size(250, 27);
+            textBoxLugar.TabIndex = 9;
             // 
-            // textBox3
+            // textBoxCasa
             // 
-            textBox3.Location = new Point(613, 53);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(250, 27);
-            textBox3.TabIndex = 10;
+            textBoxCasa.Location = new Point(613, 53);
+            textBoxCasa.Name = "textBoxCasa";
+            textBoxCasa.Size = new Size(250, 27);
+            textBoxCasa.TabIndex = 10;
             // 
             // label6
             // 
@@ -161,19 +163,19 @@
             label7.TabIndex = 12;
             label7.Text = "Varita Mágica";
             // 
-            // textBox4
+            // textBoxSangre
             // 
-            textBox4.Location = new Point(613, 134);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(250, 27);
-            textBox4.TabIndex = 13;
+            textBoxSangre.Location = new Point(613, 134);
+            textBoxSangre.Name = "textBoxSangre";
+            textBoxSangre.Size = new Size(250, 27);
+            textBoxSangre.TabIndex = 13;
             // 
-            // textBox5
+            // textBoxVarita
             // 
-            textBox5.Location = new Point(613, 94);
-            textBox5.Name = "textBox5";
-            textBox5.Size = new Size(250, 27);
-            textBox5.TabIndex = 14;
+            textBoxVarita.Location = new Point(613, 94);
+            textBoxVarita.Name = "textBoxVarita";
+            textBoxVarita.Size = new Size(250, 27);
+            textBoxVarita.TabIndex = 14;
             // 
             // label8
             // 
@@ -197,34 +199,45 @@
             label9.TabIndex = 16;
             label9.Text = "Listar Estudiantes";
             // 
-            // dateTimePicker2
+            // dateTimePickerIng
             // 
-            dateTimePicker2.Location = new Point(174, 166);
-            dateTimePicker2.Name = "dateTimePicker2";
-            dateTimePicker2.Size = new Size(250, 27);
-            dateTimePicker2.TabIndex = 17;
+            dateTimePickerIng.Location = new Point(174, 166);
+            dateTimePickerIng.Name = "dateTimePickerIng";
+            dateTimePickerIng.Size = new Size(250, 27);
+            dateTimePickerIng.TabIndex = 17;
+            // 
+            // btnAgregar
+            // 
+            btnAgregar.Location = new Point(12, 207);
+            btnAgregar.Name = "btnAgregar";
+            btnAgregar.Size = new Size(156, 29);
+            btnAgregar.TabIndex = 18;
+            btnAgregar.Text = "Agregar";
+            btnAgregar.UseVisualStyleBackColor = true;
+            btnAgregar.Click += btnAgregar_ClickAsync;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1100, 856);
-            Controls.Add(dateTimePicker2);
+            Controls.Add(btnAgregar);
+            Controls.Add(dateTimePickerIng);
             Controls.Add(label9);
             Controls.Add(label8);
-            Controls.Add(textBox5);
-            Controls.Add(textBox4);
+            Controls.Add(textBoxVarita);
+            Controls.Add(textBoxSangre);
             Controls.Add(label7);
             Controls.Add(label6);
-            Controls.Add(textBox3);
-            Controls.Add(textBox2);
+            Controls.Add(textBoxCasa);
+            Controls.Add(textBoxLugar);
             Controls.Add(label5);
             Controls.Add(label4);
-            Controls.Add(dateTimePicker1);
+            Controls.Add(dateTimePickerNac);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(textBox1);
+            Controls.Add(textBoxNombre);
             Controls.Add(btnCargar);
             Controls.Add(dgvEstudiantes);
             Name = "Form1";
@@ -239,21 +252,22 @@
 
         private DataGridView dgvEstudiantes;
         private Button btnCargar;
-        private TextBox textBox1;
+        private TextBox textBoxNombre;
         private Label label1;
         private Label label2;
         private Label label3;
-        private DateTimePicker dateTimePicker1;
+        private DateTimePicker dateTimePickerNac;
         private Label label4;
         private Label label5;
-        private TextBox textBox2;
-        private TextBox textBox3;
+        private TextBox textBoxLugar;
+        private TextBox textBoxCasa;
         private Label label6;
         private Label label7;
-        private TextBox textBox4;
-        private TextBox textBox5;
+        private TextBox textBoxSangre;
+        private TextBox textBoxVarita;
         private Label label8;
         private Label label9;
-        private DateTimePicker dateTimePicker2;
+        private DateTimePicker dateTimePickerIng;
+        private Button btnAgregar;
     }
 }

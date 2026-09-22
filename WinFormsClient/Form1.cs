@@ -51,5 +51,64 @@ namespace WinFormsClient
         {
 
         }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private async void btnAgregar_ClickAsync(object sender, EventArgs e)
+        {
+
+            btnAgregar.Enabled = false;
+            try
+            {
+                var estudiante = new Estudiantes
+                {
+                    Nombre = textBoxNombre.Text,
+                    FechaNacimiento = dateTimePickerNac.Value,
+                    LugarNacimiento = textBoxLugar.Text,
+                    FechaIngreso = dateTimePickerIng.Value,
+                    Casa = textBoxCasa.Text,
+                    VaritaMagica = textBoxVarita.Text,
+                    TipoSangreMagica = textBoxSangre.Text
+                };
+
+                var respuesta = await _httpClient.PostAsJsonAsync(
+                    "https://hogwartswebapi-emfgduhhb5cpbeck.centralus-01.azurewebsites.net/api/Estudiantes",
+                    estudiante
+                );
+
+
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    MessageBox.Show(
+                        "Estudiante guardado correctamente.",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "No se pudo guardar",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"No se pudo agregar el estudiante: {ex.Message}", "Error de conexión",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnAgregar.Enabled = true;
+            }
+
+        }
     }
 }
