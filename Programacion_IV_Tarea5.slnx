@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="BlazorClient/BlazorClient.Client/BlazorClient.Client.csproj" Id="c60b5096-7df8-44e7-9a19-26289042710c" />
+  <Project Path="BlazorClient/BlazorClient/BlazorClient.csproj" Id="5d6a1685-85a4-4024-aa5a-c22c7352b923" />
   <Project Path="WebApi/WebApi.csproj" />
+  <Project Path="WinFormsClient/WinFormsClient.csproj" Id="b17b3439-0138-4cd2-a5ea-6a9204cb72f7" />
 </Solution>

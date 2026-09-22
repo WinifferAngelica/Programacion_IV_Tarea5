@@ -1,0 +1,89 @@
+﻿@page "/estudiantes"
+
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<h3>Lista de Estudiantes</h3>
+
+@if (estudiantes == null)
+{
+    <p>Cargando...</p>
+}
+else if (estudiantes.Count == 0)
+{
+    <p>No hay estudiantes registrados.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Fecha Nacimiento</th>
+                <th>Lugar Nacimiento</th>
+                <th>Fecha Ingreso</th>
+                <th>Casa</th>
+                <th>Varita Mágica</th>
+                <th>Tipo de Sangre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var estudiante in estudiantes)
+            {
+                <tr>
+                    <td>@estudiante.Id</td>
+                    <td>@estudiante.Nombre</td>
+                    <td>@estudiante.FechaNacimiento.ToShortDateString()</td>
+                    <td>@estudiante.LugarNacimiento</td>
+                    <td>@estudiante.FechaIngreso.ToShortDateString()</td>
+                    <td>@estudiante.Casa</td>
+                    <td>@estudiante.VaritaMagica</td>
+                    <td>@estudiante.TipoSangreMagica</td>
+
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                @onclick="() => Editar(estudiante.Id)">
+                            Editar
+                        </button>
+
+                        <button class="btn btn-danger btn-sm ms-1"
+                                @onclick="() => Eliminar(estudiante.Id)">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<BlazorClient.Client.Modelos.Estudiantes.Estudiantes>? estudiantes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        estudiantes = await Http.GetFromJsonAsync<
+            List<BlazorClient.Client.Modelos.Estudiantes.Estudiantes>
+        >("https://hogwartswebapi-emfgduhhb5cpbeck.centralus-01.azurewebsites.net/api/Estudiantes");
+    }
+
+    private void Editar(int id)
+    {
+        Navigation.NavigateTo($"/estudiantes/editar/{id}");
+    }
+
+    private async Task Eliminar(int id)
+    {
+        var respuesta = await Http.DeleteAsync(
+            $"api/Estudiantes/{id}"
+        );
+
+        if (respuesta.IsSuccessStatusCode)
+        {
+            estudiantes?.RemoveAll(e => e.Id == id);
+        }
+    }
+}
