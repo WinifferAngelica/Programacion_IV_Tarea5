@@ -1,43 +1,58 @@
 using WebApi.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
 
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+namespace WebApi;
 
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddScoped<DapperDB>();
-
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy("MiPoliticaCors", policy =>
+
+    private const string BlazorClientPolicy = "BlazorClientPolicy";
+
+    public static void Main(string[] args)
     {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
+        var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+        // Add services to the container.
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-app.UseCors("MiPoliticaCors");
+        builder.Services.AddControllers();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        builder.Services.AddScoped<DapperDB>();
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(BlazorClientPolicy, policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
+
+        var app = builder.Build();
+
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+        app.UseCors("BlazorClientPolicy");
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.Run();
+
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

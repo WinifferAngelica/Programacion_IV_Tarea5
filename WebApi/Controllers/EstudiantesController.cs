@@ -16,7 +16,7 @@ public class EstudiantesController : ControllerBase
         _db = db;
     }
 
-    // GET: api/Estudiantes
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -29,7 +29,7 @@ public class EstudiantesController : ControllerBase
         return Ok(estudiantes);
     }
 
-    // GET: api/Estudiantes/1
+
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
@@ -46,7 +46,7 @@ public class EstudiantesController : ControllerBase
         return Ok(estudiante);
     }
 
-    // POST: api/Estudiantes
+    
     [HttpPost]
     public async Task<IActionResult> Post(Estudiantes estudiante)
     {
@@ -63,7 +63,7 @@ public class EstudiantesController : ControllerBase
         return Ok(estudiante);
     }
 
-    // PUT: api/Estudiantes/1
+   
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Estudiantes estudiante)
     {
@@ -100,7 +100,7 @@ public class EstudiantesController : ControllerBase
         return Ok();
     }
 
-    // DELETE: api/Estudiantes/1
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
