@@ -7,11 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
-// Registrar HttpClient para el proyecto BlazorClient
+
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("https://hogwartswebapi-emfgduhhb5cpbeck.centralus-01.azurewebsites.net/api/Estudiantes")
+    BaseAddress = new Uri("https://hogwartswebapi-emfgduhhb5cpbeck.centralus-01.azurewebsites.net/")
 });
+
 
 var app = builder.Build();
 

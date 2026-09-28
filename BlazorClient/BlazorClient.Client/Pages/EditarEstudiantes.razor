@@ -1,101 +1,81 @@
 ﻿@page "/estudiantes/editar/{Id:int}"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
+@using Modelo = BlazorClient.Client.Modelos.Estudiantes.Estudiantes
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
-<h3>Editar Estudiante</h3>
+<PageTitle>Editar Estudiante</PageTitle>
 
-@if (estudiante == null)
+<h3>Editar estudiante</h3>
+
+@if (cargando)
 {
     <p>Cargando...</p>
 }
+else if (estudiante == null)
+{
+    <div class="alert alert-danger">@mensaje</div>
+    <a href="/estudiantes" class="btn btn-secondary">Volver a la lista</a>
+}
 else
 {
-    <EditForm Model="@estudiante" OnValidSubmit="@Guardar">
-
-        <div class="mb-3">
-            <label>Nombre</label>
-            <InputText class="form-control"
-                       @bind-Value="estudiante.Nombre" />
-        </div>
-
-        <div class="mb-3">
-            <label>Fecha de Nacimiento</label>
-            <InputDate class="form-control"
-                       @bind-Value="estudiante.FechaNacimiento" />
-        </div>
-
-        <div class="mb-3">
-            <label>Lugar de Nacimiento</label>
-            <InputText class="form-control"
-                       @bind-Value="estudiante.LugarNacimiento" />
-        </div>
-
-        <div class="mb-3">
-            <label>Fecha de Ingreso</label>
-            <InputDate class="form-control"
-                       @bind-Value="estudiante.FechaIngreso" />
-        </div>
-
-        <div class="mb-3">
-            <label>Casa</label>
-            <InputText class="form-control"
-                       @bind-Value="estudiante.Casa" />
-        </div>
-
-        <div class="mb-3">
-            <label>Varita Mágica</label>
-            <InputText class="form-control"
-                       @bind-Value="estudiante.VaritaMagica" />
-        </div>
-
-        <div class="mb-3">
-            <label>Tipo de Sangre Mágica</label>
-            <InputText class="form-control"
-                       @bind-Value="estudiante.TipoSangreMagica" />
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-            Guardar Cambios
-        </button>
-
-        <button type="button"
-                class="btn btn-secondary ms-2"
-                @onclick="Cancelar">
-            Cancelar
-        </button>
-
-    </EditForm>
+    <EstudianteForm Estudiante="estudiante"
+                    OnGuardar="Guardar"
+                    Guardando="guardando"
+                    Mensaje="mensaje" />
 }
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
-    private BlazorClient.Client.Modelos.Estudiantes.Estudiantes? estudiante;
+    private Modelo? estudiante;
+    private bool cargando = true;
+    private bool guardando;
+    private string? mensaje;
 
     protected override async Task OnInitializedAsync()
     {
-        estudiante = await Http.GetFromJsonAsync<
-            BlazorClient.Client.Modelos.Estudiantes.Estudiantes
-        >($"api/Estudiantes/{Id}");
+        try
+        {
+            estudiante = await Http.GetFromJsonAsync<Modelo>($"api/Estudiantes/{Id}");
+            if (estudiante == null)
+                mensaje = "El estudiante no existe.";
+        }
+        catch (Exception ex)
+        {
+            mensaje = $"No se pudo cargar el estudiante: {ex.Message}";
+        }
+        finally
+        {
+            cargando = false;
+        }
     }
 
     private async Task Guardar()
     {
-        var respuesta = await Http.PutAsJsonAsync(
-            $"api/Estudiantes/{Id}",
-            estudiante
-        );
+        guardando = true;
+        mensaje = null;
 
-        if (respuesta.IsSuccessStatusCode)
+        try
         {
-            Navigation.NavigateTo("/estudiantes");
+            var respuesta = await Http.PutAsJsonAsync($"api/Estudiantes/{Id}", estudiante);
+
+            if (respuesta.IsSuccessStatusCode)
+                Navigation.NavigateTo("/estudiantes");
+            else
+                mensaje = $"Error {(int)respuesta.StatusCode}: {await respuesta.Content.ReadAsStringAsync()}";
+        }
+        catch (Exception ex)
+        {
+            mensaje = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            guardando = false;
         }
     }
-
-    private void Cancelar()
-    {
-        Navigation.NavigateTo("/estudiantes");
-    }
 }
+
+
+

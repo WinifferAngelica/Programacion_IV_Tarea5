@@ -1,0 +1,89 @@
+﻿@using Modelo = BlazorClient.Client.Modelos.Estudiantes.Estudiantes
+
+<EditForm Model="Estudiante" OnSubmit="Enviar">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control" @bind-Value="Estudiante.Nombre" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Lugar de nacimiento</label>
+            <InputText class="form-control" @bind-Value="Estudiante.LugarNacimiento" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Fecha de nacimiento</label>
+            <InputDate class="form-control" @bind-Value="Estudiante.FechaNacimiento" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Fecha de ingreso</label>
+            <InputDate class="form-control" @bind-Value="Estudiante.FechaIngreso" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Casa</label>
+            <InputSelect class="form-select" @bind-Value="Estudiante.Casa">
+                <option value="">Selecciona una casa</option>
+                <option>Gryffindor</option>
+                <option>Slytherin</option>
+                <option>Ravenclaw</option>
+                <option>Hufflepuff</option>
+            </InputSelect>
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Varita mágica</label>
+            <InputText class="form-control" @bind-Value="Estudiante.VaritaMagica" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Tipo de sangre mágica</label>
+            <InputSelect class="form-select" @bind-Value="Estudiante.TipoSangreMagica">
+                <option value="">Selecciona un tipo</option>
+                <option>Sangre pura</option>
+                <option>Mestiza</option>
+                <option>Nacido de muggles</option>
+                <option>Muggle</option>
+            </InputSelect>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger mt-3">@error</div>
+    }
+    @if (!string.IsNullOrEmpty(Mensaje))
+    {
+        <div class="alert alert-danger mt-3">@Mensaje</div>
+    }
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary" disabled="@Guardando">
+            @(Guardando ? "Guardando..." : "Guardar cambios")
+        </button>
+        <a href="/estudiantes" class="btn btn-secondary ms-2">Cancelar</a>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired] public Modelo Estudiante { get; set; } = new();
+    [Parameter] public EventCallback OnGuardar { get; set; }
+    [Parameter] public bool Guardando { get; set; }
+    [Parameter] public string? Mensaje { get; set; }
+
+    private string? error;
+
+    private async Task Enviar()
+    {
+        if (string.IsNullOrWhiteSpace(Estudiante.Nombre))
+        {
+            error = "El nombre es obligatorio.";
+            return;
+        }
+
+        error = null;
+        await OnGuardar.InvokeAsync();
+    }
+}

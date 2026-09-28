@@ -1,74 +1,53 @@
 ﻿@page "/estudiantes/crear"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
+@using Modelo = BlazorClient.Client.Modelos.Estudiantes.Estudiantes
 @inject HttpClient Http
 @inject NavigationManager Navigation
 
-<h3>Crear Estudiante</h3>
+<PageTitle>Crear Estudiante</PageTitle>
 
-<EditForm Model="@estudiante" OnValidSubmit="@Guardar">
+<h3>Crear estudiante</h3>
 
-    <div class="mb-3">
-        <label>Nombre</label>
-        <InputText class="form-control"
-                   @bind-Value="estudiante.Nombre" />
-    </div>
-
-    <div class="mb-3">
-        <label>Fecha de Nacimiento</label>
-        <InputDate class="form-control"
-                   @bind-Value="estudiante.FechaNacimiento" />
-    </div>
-
-    <div class="mb-3">
-        <label>Lugar de Nacimiento</label>
-        <InputText class="form-control"
-                   @bind-Value="estudiante.LugarNacimiento" />
-    </div>
-
-    <div class="mb-3">
-        <label>Fecha de Ingreso</label>
-        <InputDate class="form-control"
-                   @bind-Value="estudiante.FechaIngreso" />
-    </div>
-
-    <div class="mb-3">
-        <label>Casa</label>
-        <InputText class="form-control"
-                   @bind-Value="estudiante.Casa" />
-    </div>
-
-    <div class="mb-3">
-        <label>Varita Mágica</label>
-        <InputText class="form-control"
-                   @bind-Value="estudiante.VaritaMagica" />
-    </div>
-
-    <div class="mb-3">
-        <label>Tipo de Sangre Mágica</label>
-        <InputText class="form-control"
-                   @bind-Value="estudiante.TipoSangreMagica" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        Guardar
-    </button>
-
-</EditForm>
+<EstudianteForm Estudiante="estudiante"
+                OnGuardar="Guardar"
+                Guardando="guardando"
+                Mensaje="mensaje" />
 
 @code {
-    private BlazorClient.Client.Modelos.Estudiantes.Estudiantes estudiante =
-        new();
+    private Modelo estudiante = new()
+    {
+        FechaNacimiento = DateTime.Today.AddYears(-11),
+        FechaIngreso = DateTime.Today
+    };
+    private bool guardando;
+    private string? mensaje;
 
     private async Task Guardar()
     {
-        var respuesta = await Http.PostAsJsonAsync(
-            "api/Estudiantes",
-            estudiante
-        );
+        guardando = true;
+        mensaje = null;
 
-        if (respuesta.IsSuccessStatusCode)
+        try
         {
-            Navigation.NavigateTo("/estudiantes");
+            var respuesta = await Http.PostAsJsonAsync("api/Estudiantes", estudiante);
+
+            if (respuesta.IsSuccessStatusCode)
+                Navigation.NavigateTo("/estudiantes");
+            else
+                mensaje = $"Error {(int)respuesta.StatusCode}: {await respuesta.Content.ReadAsStringAsync()}";
+        }
+        catch (Exception ex)
+        {
+            mensaje = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            guardando = false;
         }
     }
 }
+
+
+
+

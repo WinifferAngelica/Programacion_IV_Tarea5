@@ -4,7 +4,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("https://hogwartswebapi-emfgduhhb5cpbeck.centralus-01.azurewebsites.net/api/Estudiantes")
+    BaseAddress = new Uri("https://hogwartswebapi-emfgduhhb5cpbeck.centralus-01.azurewebsites.net")
 });
 
 await builder.Build().RunAsync();

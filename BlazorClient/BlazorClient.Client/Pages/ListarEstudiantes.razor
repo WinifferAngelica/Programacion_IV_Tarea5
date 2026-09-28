@@ -1,89 +1,113 @@
 ﻿@page "/estudiantes"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
+@using Modelo = BlazorClient.Client.Modelos.Estudiantes.Estudiantes
 @inject HttpClient Http
-@inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-<h3>Lista de Estudiantes</h3>
+<PageTitle>Listado de Estudiantes</PageTitle>
 
-@if (estudiantes == null)
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Estudiantes</h3>
+    <a class="btn btn-primary" href="/estudiantes/crear">Crear estudiante</a>
+</div>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+@if (cargando)
 {
     <p>Cargando...</p>
 }
 else if (estudiantes.Count == 0)
 {
-    <p>No hay estudiantes registrados.</p>
+    <p>No hay estudiantes registrados. Crea el primero con el botón de arriba.</p>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Fecha Nacimiento</th>
-                <th>Lugar Nacimiento</th>
-                <th>Fecha Ingreso</th>
-                <th>Casa</th>
-                <th>Varita Mágica</th>
-                <th>Tipo de Sangre</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var estudiante in estudiantes)
-            {
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
                 <tr>
-                    <td>@estudiante.Id</td>
-                    <td>@estudiante.Nombre</td>
-                    <td>@estudiante.FechaNacimiento.ToShortDateString()</td>
-                    <td>@estudiante.LugarNacimiento</td>
-                    <td>@estudiante.FechaIngreso.ToShortDateString()</td>
-                    <td>@estudiante.Casa</td>
-                    <td>@estudiante.VaritaMagica</td>
-                    <td>@estudiante.TipoSangreMagica</td>
-
-                    <td>
-                        <button class="btn btn-warning btn-sm"
-                                @onclick="() => Editar(estudiante.Id)">
-                            Editar
-                        </button>
-
-                        <button class="btn btn-danger btn-sm ms-1"
-                                @onclick="() => Eliminar(estudiante.Id)">
-                            Eliminar
-                        </button>
-                    </td>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Nacimiento</th>
+                    <th>Lugar</th>
+                    <th>Ingreso</th>
+                    <th>Casa</th>
+                    <th>Varita</th>
+                    <th>Sangre</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var e in estudiantes)
+                {
+                    <tr>
+                        <td>@e.Id</td>
+                        <td>@e.Nombre</td>
+                        <td>@e.FechaNacimiento.ToShortDateString()</td>
+                        <td>@e.LugarNacimiento</td>
+                        <td>@e.FechaIngreso.ToShortDateString()</td>
+                        <td>@e.Casa</td>
+                        <td>@e.VaritaMagica</td>
+                        <td>@e.TipoSangreMagica</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-warning btn-sm" href="/estudiantes/editar/@e.Id">Editar</a>
+                            <button type="button" class="btn btn-danger btn-sm ms-1"
+                                    @onclick="() => Eliminar(e)">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 @code {
-    private List<BlazorClient.Client.Modelos.Estudiantes.Estudiantes>? estudiantes;
+    private List<Modelo> estudiantes = new();
+    private bool cargando = true;
+    private string? error;
 
     protected override async Task OnInitializedAsync()
     {
-        estudiantes = await Http.GetFromJsonAsync<
-            List<BlazorClient.Client.Modelos.Estudiantes.Estudiantes>
-        >("https://hogwartswebapi-emfgduhhb5cpbeck.centralus-01.azurewebsites.net/api/Estudiantes");
-    }
-
-    private void Editar(int id)
-    {
-        Navigation.NavigateTo($"/estudiantes/editar/{id}");
-    }
-
-    private async Task Eliminar(int id)
-    {
-        var respuesta = await Http.DeleteAsync(
-            $"api/Estudiantes/{id}"
-        );
-
-        if (respuesta.IsSuccessStatusCode)
+        try
         {
-            estudiantes?.RemoveAll(e => e.Id == id);
+            estudiantes = await Http.GetFromJsonAsync<List<Modelo>>("api/Estudiantes") ?? new();
+        }
+        catch (Exception ex)
+        {
+            error = $"No se pudo cargar la lista: {ex.Message}";
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+    private async Task Eliminar(Modelo e)
+    {
+        if (!await JS.InvokeAsync<bool>("confirm", $"¿Eliminar a {e.Nombre}?"))
+            return;
+
+        try
+        {
+            var respuesta = await Http.DeleteAsync($"api/Estudiantes/{e.Id}");
+            if (respuesta.IsSuccessStatusCode)
+                estudiantes.Remove(e);
+            else
+                error = $"No se pudo eliminar ({(int)respuesta.StatusCode}).";
+        }
+        catch (Exception ex)
+        {
+            error = $"Error al eliminar: {ex.Message}";
         }
     }
 }
+
+
+
